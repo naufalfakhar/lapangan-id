@@ -1,6 +1,9 @@
 import Link from "next/link";
 import Head from "next/head";
 
+import { Dialog, Transition } from "@headlessui/react";
+import { Fragment, useState } from "react";
+
 export default function Navbar() {
   return (
     <>
@@ -37,7 +40,7 @@ export default function Navbar() {
                   </div>
                 </div>
               </div>
-              <p>Masuk</p>
+              <LoginModal />
             </div>
           </div>
         </section>
@@ -45,3 +48,100 @@ export default function Navbar() {
     </>
   );
 }
+
+const LoginModal = () => {
+  const [isOpen, setIsOpen] = useState(true);
+  const [tab, setTab] = useState("login");
+
+  function closeModal() {
+    setIsOpen(false);
+  }
+
+  function openModal() {
+    setIsOpen(true);
+  }
+
+  return (
+    <>
+      <button type="button" onClick={openModal} className="">
+        Login
+      </button>
+
+      <Transition appear show={isOpen} as={Fragment}>
+        <Dialog as="div" className="relative z-10" onClose={closeModal}>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black bg-opacity-25" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4 text-center">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <Dialog.Panel className="w-full max-w-xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                  <Dialog.Title
+                    as="h3"
+                    className="text-lg font-medium leading-6 text-gray-900"
+                  >
+                    Lapangan.id
+                  </Dialog.Title>
+                  {tab === "login" ? (
+                    <div className="flex flex-col">
+                      <h1>Login</h1>
+                      <form className="mt-2 flex flex-col">
+                        <input type="text" placeholder="username" required />
+                        <input
+                          type="password"
+                          placeholder="password"
+                          required
+                        />
+                        <button type="submit">masuk</button>
+                        <button
+                          type="button"
+                          onClick={() => setTab("register")}
+                        >
+                          daftar
+                        </button>
+                      </form>
+                    </div>
+                  ) : tab === "register" ? (
+                    <div className="flex flex-col">
+                      <h1>Register</h1>
+                      <form className="mt-2 flex flex-col">
+                        <input type="email" placeholder="email" required />
+                        <input type="text" placeholder="username" required />
+                        <input
+                          type="password"
+                          placeholder="password"
+                          required
+                        />
+                        <button type="submit">Daftar</button>
+                        <button type="button" onClick={() => setTab("login")}>
+                          masuk
+                        </button>
+                      </form>
+                    </div>
+                  ) : null}
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </Dialog>
+      </Transition>
+    </>
+  );
+};
